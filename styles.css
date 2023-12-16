@@ -1,0 +1,38 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  border-style: solid;
+  border-width: 10px;
+  width: 500px;
+  height: 700px;
+  margin-left: 50vh;
+  margin-right: 50vh;
+  margin-top: 10vh;
+}
+
+.display {
+  border-bottom: 5px solid;
+  height: 100px;
+  font-size: 100px;
+  text-align: center;
+}
+
+.row1,
+.row2,
+.row3,
+.row4,
+.row5 {
+  flex-grow: 1;
+  display: flex;
+}
+
+button {
+  flex-grow: 1;
+}
