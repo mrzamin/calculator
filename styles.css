@@ -22,6 +22,7 @@ html {
   font-size: 50px;
   text-align: center;
   background-color: rgb(32, 32, 32);
+  color: white;
 }
 
 .row1 > *,
@@ -50,22 +51,23 @@ button {
 
 .operator,
 .equals {
-  color: white;
   background-color: rgb(251, 135, 26);
+}
+
+.keys {
+  color: white;
   opacity: 100;
+  border-radius: 25px;
 }
 
 .digit,
 .decimal {
-  color: white;
   background-color: rgb(66, 68, 65);
-  opacity: 100;
 }
 
 .AC,
 .plus-minus,
 .percent {
   background-color: rgb(172, 167, 171);
-  opacity: 100;
   color: rgb(66, 68, 65);
 }
