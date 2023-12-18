@@ -44,13 +44,13 @@ operatorBtns.forEach((btn) => {
 
 function getFirstNumber() {
   logValues(display.textContent);
-  let firstNumberEntered = values[values.length - 1];
+  let firstNumberEntered = Number(values[values.length - 1]);
   return (num1 = firstNumberEntered);
 }
 
 function getSecondNumber() {
   logValues(display.textContent);
-  let secondNumberEntered = values[values.length - 1];
+  let secondNumberEntered = Number(values[values.length - 1]);
   return (num2 = secondNumberEntered);
 }
 
