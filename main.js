@@ -149,9 +149,25 @@ function operate() {
       currentNum = multiply(previousNum, currentNum);
       break;
     case "/":
+      if (currentNum <= 0) {
+        currentNum = "Divided by 0: Stoooop it!";
+        previousNum = "";
+        displayAnswer();
+        return;
+      }
       currentNum = divide(previousNum, currentNum);
       break;
   }
+  currentNum = currentNum.toString();
+  displayAnswer();
+}
+
+function displayAnswer() {
+  operator = "";
   previousDisplayNum.textContent = "";
-  currentDisplayNum.textContent = currentNum;
+  if (currentNum.length <= 10) {
+    currentDisplayNum.textContent = currentNum;
+  } else {
+    currentDisplayNum.textContent = currentNum.slice(0, 10) + "...";
+  }
 }
