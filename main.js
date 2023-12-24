@@ -1,87 +1,122 @@
-//Grab buttons.
+//Grab DOM elements so we can modify them.
 let display = document.querySelector(".display");
+let currentDisplayNum = document.querySelector(".currentNum");
+let previousDisplayNum = document.querySelector(".previousNum");
 let digitBtns = document.querySelectorAll(".digit");
 let operatorBtns = document.querySelectorAll(".operator");
-let acBtn = document.querySelector(".AC");
-let plusMinusBtn = document.querySelector(".plus-minus");
+let clearBtn = document.querySelector(".clear");
 let percentBtn = document.querySelector(".percent");
-let divideBtn = document.querySelector(".divide");
-let multiplyBtn = document.querySelector(".multiply");
-let subtractBtn = document.querySelector(".subtract");
-let addBtn = document.querySelector(".add");
 let decimalBtn = document.querySelector(".decimal");
 let equalsBtn = document.querySelector(".equals");
-console.log(operatorBtns);
-//Pushes return value from logValues().
-let values = [];
 
-//I don't know how to use these yet.
-let num1;
-let num2;
-let operator;
+//Sets global variables.
+let currentNum = "";
+let previousNum = "";
+let operator = "";
 
-//Executes the popDisplay fcn when a digit is clicked.
-
-equalsBtn.addEventListener("click", () => {
-  getSecondNumber();
-  operate(operator, num1, num2);
-  displayResult();
-});
-
+//Listen whenever a digit btn is pressed.
 digitBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    populateDisplay(btn.textContent);
+  btn.addEventListener("click", (e) => {
+    displayCurrentNumber(e.target.textContent);
   });
 });
 
+//Append pressed digit to current num; display current num.
+function displayCurrentNumber(num) {
+  if (currentNum.length <= 12) {
+    currentNum += num;
+    currentDisplayNum.textContent = currentNum;
+  }
+}
+
+//Listen whenever an operator btn is pressed.
 operatorBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    getOperator(btn.textContent);
-    getFirstNumber();
-    clearDisplay();
+  btn.addEventListener("click", (e) => {
+    setOperator(e.target.textContent);
   });
 });
 
-function getFirstNumber() {
-  logValues(display.textContent);
-  let firstNumberEntered = Number(values[values.length - 1]);
-  return (num1 = firstNumberEntered);
+//Set operator to whichever operator key is pressed.
+function setOperator(opKeyPressed) {
+  operator = opKeyPressed;
+  updateNumbers(currentNum);
 }
 
-function getSecondNumber() {
-  logValues(display.textContent);
-  let secondNumberEntered = Number(values[values.length - 1]);
-  return (num2 = secondNumberEntered);
+function updateNumbers(num) {
+  previousNum = num;
+  previousDisplayNum.textContent = `${previousNum} ${operator}`;
+  currentNum = "";
+  currentDisplayNum.textContent = "";
 }
 
-function getOperator(value) {
-  operator = value;
-  return operator;
-}
+//Listens when equal sign is pressed.
+equalsBtn.addEventListener("click", operate);
 
-function displayResult() {
-  display.textContent = `${num1} ${operator} ${num2} = ${operate(
-    operator,
-    num1,
-    num2
-  )}`;
-}
+// function populateDisplay(digitBtnText) {
+//   display.textContent += digitBtnText;
+// }
 
-function clearDisplay() {
-  display.textContent = "";
-}
+// //Populate display with digits clicked.
+// digitBtns.forEach((btn) => {
+//   btn.addEventListener("click", () => {
+//     populateDisplay(btn.textContent);
+//   });
+// });
 
-//Adds an additional digit to display when button is clicked.
-function populateDisplay(num1) {
-  display.textContent += num1;
-}
+// //Executes LogNumber when an operator btn is clicked.
+// operatorBtns.forEach((btn) => {
+//   btn.addEventListener("click", () => {
+//     let currentNumber = display.textContent;
+//     let currentOperator = btn.textContent;
+//     logNumbers(currentNumber);
+//     logOperators(currentOperator);
+//     clearDisplay();
+//   });
+// });
 
-function logValues(value) {
-  values.push(value);
-  console.log(values);
-}
+// //Adds current number to the Numbers array.
+// function logNumbers(currentNumber) {
+//   numbers.push(currentNumber);
+//   calculateAnswer();
+// }
 
-//Create functions for basic math operators.
+// function logOperators(currentOperator) {
+//   operators.push(currentOperator);
+// }
+
+// function clearDisplay() {
+//   display.textContent = "";
+// }
+
+// //Push current number into array while always keeping an array of length of 2, removing the oldest element.
+// function updateArray() {
+//   if (numbers.length >= 3) {
+//     numbers = numbers.splice(0, 1);
+//   }
+// }
+
+// function calculateAnswer() {
+//   if (operators.length == 1) {
+//     displayAnswer(numbers[0]);
+//   } else if (numbers.length == 1) {
+//     displayAnswer(numbers[0]);
+//   } else if (numbers.length == 2) {
+//     num1 = Number(numbers[0]);
+//     num2 = Number(numbers[1]);
+//     let currentOperator = operators[operators.length - 1];
+//     displayAnswer(operate(currentOperator, num1, num2));
+//   } else {
+//     updateArray();
+//   }
+// }
+
+// function displayAnswer(answer) {
+//   display.textContent = answer;
+// }
+
+// console.log(operators, numbers);
+
+//Complete basic math operations.
 const add = function (a, b) {
   return a + b;
 };
@@ -98,20 +133,25 @@ const divide = function (a, b) {
   return a / b;
 };
 
-//completes an operation.
-function operate(operator, num1, num2) {
+//completes an operation when equals sign is pressed.
+function operate() {
+  previousNum = Number(previousNum);
+  currentNum = Number(currentNum);
+
   switch (operator) {
     case "+":
-      return add(num1, num2);
+      currentNum = add(previousNum, currentNum);
       break;
     case "-":
-      return subtract(num1, num2);
+      currentNum = subtract(previousNum, currentNum);
       break;
     case "*":
-      return multiply(num1, num2);
+      currentNum = multiply(previousNum, currentNum);
       break;
     case "/":
-      return divide(num1, num2);
+      currentNum = divide(previousNum, currentNum);
       break;
   }
+  previousDisplayNum.textContent = "";
+  currentDisplayNum.textContent = currentNum;
 }
