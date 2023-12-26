@@ -21,8 +21,6 @@ html {
   height: 100px;
   font-size: 50px;
   text-align: center;
-  background-color: rgb(32, 32, 32);
-  color: white;
 }
 
 .row1 > *,
@@ -65,9 +63,15 @@ button {
   background-color: rgb(66, 68, 65);
 }
 
-.AC,
+.clear,
 .plus-minus,
 .percent {
   background-color: rgb(172, 167, 171);
   color: rgb(66, 68, 65);
+}
+
+.previousNum {
+  background-color: black;
+  color: white;
+  height: 50px;
 }

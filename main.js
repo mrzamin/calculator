@@ -1,7 +1,7 @@
 //Grab DOM elements so we can modify them.
 let display = document.querySelector(".display");
-let currentDisplayNum = document.querySelector(".currentNum");
-let previousDisplayNum = document.querySelector(".previousNum");
+let currentDisplayedNum = document.querySelector(".currentNum");
+let previousDisplayedNum = document.querySelector(".previousNum");
 let digitBtns = document.querySelectorAll(".digit");
 let operatorBtns = document.querySelectorAll(".operator");
 let clearBtn = document.querySelector(".clear");
@@ -14,107 +14,84 @@ let currentNum = "";
 let previousNum = "";
 let operator = "";
 
-//Listen whenever a digit btn is pressed.
+//Listen anytime the equals btn is pressed.
+equalsBtn.addEventListener("click", () => {
+  if (previousNum != "" && currentNum != "") {
+    operate();
+  }
+});
+
+//Listen anytime a digit btn is pressed.
 digitBtns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
-    displayCurrentNumber(e.target.textContent);
+    displayCurrentNum(e.target.textContent);
   });
 });
 
-//Append pressed digit to current num; display current num.
-function displayCurrentNumber(num) {
-  if (currentNum.length <= 12) {
-    currentNum += num;
-    currentDisplayNum.textContent = currentNum;
+//Fires when a digit btn is pressed. Appends digit to current num as long as current num is <= 11.
+function displayCurrentNum(digit) {
+  if (previousNum != "" && currentNum != "" && operator === "") {
+    previousNum = "";
+    currentDisplayedNum.textContent = currentNum;
+  }
+  if (currentNum.length <= 11) {
+    currentNum += digit;
+    currentDisplayedNum.textContent = currentNum;
   }
 }
 
-//Listen whenever an operator btn is pressed.
+//Listen anytime an operator btn is pressed.
+
 operatorBtns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
-    setOperator(e.target.textContent);
+    updateNumbers(e.target.textContent);
   });
 });
 
-//Set operator to whichever operator key is pressed.
-function setOperator(opKeyPressed) {
-  operator = opKeyPressed;
-  updateNumbers(currentNum);
+//Listen anytime the decimal button is pressed.
+decimalBtn.addEventListener("click", addDecimal);
+
+function addDecimal() {
+  if (!currentNum.includes(".")) {
+    currentNum += ".";
+    currentDisplayedNum.textContent = currentNum;
+  }
 }
 
-function updateNumbers(num) {
-  previousNum = num;
-  previousDisplayNum.textContent = `${previousNum} ${operator}`;
+//Fires when an operator btn is clicked. Sets the current operator.
+function updateOperator(text) {
+  operator = text;
+  previousDisplayedNum.textContent = previousNum + "" + operator;
+  currentDisplayedNum.textContent = "";
   currentNum = "";
-  currentDisplayNum.textContent = "";
 }
 
-//Listens when equal sign is pressed.
-equalsBtn.addEventListener("click", operate);
+function updateNumbers(optBtn) {
+  if (previousNum === "") {
+    previousNum = currentNum;
+    updateOperator(optBtn);
+  } else if (currentNum === "") {
+    updateOperator(optBtn);
+  } else {
+    operate();
+    operator = optBtn;
+    currentDisplayedNum.textContent = "";
+    previousDisplayedNum.textContent = previousNum + "" + operator;
+  }
+}
 
-// function populateDisplay(digitBtnText) {
-//   display.textContent += digitBtnText;
-// }
+// //Listens whenever clear btn is clicked.
+clearBtn.addEventListener("click", clearCalc);
 
-// //Populate display with digits clicked.
-// digitBtns.forEach((btn) => {
-//   btn.addEventListener("click", () => {
-//     populateDisplay(btn.textContent);
-//   });
-// });
+//Fires when clear btn is pressed. Clears the calculator.
 
-// //Executes LogNumber when an operator btn is clicked.
-// operatorBtns.forEach((btn) => {
-//   btn.addEventListener("click", () => {
-//     let currentNumber = display.textContent;
-//     let currentOperator = btn.textContent;
-//     logNumbers(currentNumber);
-//     logOperators(currentOperator);
-//     clearDisplay();
-//   });
-// });
-
-// //Adds current number to the Numbers array.
-// function logNumbers(currentNumber) {
-//   numbers.push(currentNumber);
-//   calculateAnswer();
-// }
-
-// function logOperators(currentOperator) {
-//   operators.push(currentOperator);
-// }
-
-// function clearDisplay() {
-//   display.textContent = "";
-// }
-
-// //Push current number into array while always keeping an array of length of 2, removing the oldest element.
-// function updateArray() {
-//   if (numbers.length >= 3) {
-//     numbers = numbers.splice(0, 1);
-//   }
-// }
-
-// function calculateAnswer() {
-//   if (operators.length == 1) {
-//     displayAnswer(numbers[0]);
-//   } else if (numbers.length == 1) {
-//     displayAnswer(numbers[0]);
-//   } else if (numbers.length == 2) {
-//     num1 = Number(numbers[0]);
-//     num2 = Number(numbers[1]);
-//     let currentOperator = operators[operators.length - 1];
-//     displayAnswer(operate(currentOperator, num1, num2));
-//   } else {
-//     updateArray();
-//   }
-// }
-
-// function displayAnswer(answer) {
-//   display.textContent = answer;
-// }
-
-// console.log(operators, numbers);
+function clearCalc() {
+  previousNum = "";
+  currentNum = "";
+  previousDisplayedNum.textContent = "";
+  currentDisplayedNum.textContent = "0";
+  operator = "";
+}
 
 //Complete basic math operations.
 const add = function (a, b) {
@@ -140,34 +117,47 @@ function operate() {
 
   switch (operator) {
     case "+":
-      currentNum = add(previousNum, currentNum);
+      previousNum = add(previousNum, currentNum);
       break;
     case "-":
-      currentNum = subtract(previousNum, currentNum);
+      previousNum = subtract(previousNum, currentNum);
       break;
     case "*":
-      currentNum = multiply(previousNum, currentNum);
+      previousNum = multiply(previousNum, currentNum);
       break;
     case "/":
       if (currentNum <= 0) {
-        currentNum = "Divided by 0: Stoooop it!";
-        previousNum = "";
-        displayAnswer();
+        displayErrorMsg();
         return;
       }
-      currentNum = divide(previousNum, currentNum);
+      previousNum = divide(previousNum, currentNum);
       break;
   }
-  currentNum = currentNum.toString();
+  previousNum = roundAnswer(previousNum);
+  previousNum = previousNum.toString();
   displayAnswer();
 }
 
 function displayAnswer() {
-  operator = "";
-  previousDisplayNum.textContent = "";
-  if (currentNum.length <= 10) {
-    currentDisplayNum.textContent = currentNum;
+  if (previousNum.includes("Divided by zero") || previousNum.length <= 12) {
+    currentDisplayedNum.textContent = previousNum;
   } else {
-    currentDisplayNum.textContent = currentNum.slice(0, 10) + "...";
+    currentDisplayedNum.textContent = previousNum.slice(0, 12) + "...";
   }
+  previousDisplayedNum.textContent = "";
+  operator = "";
+  currentNum = "";
+}
+
+function roundAnswer(answer) {
+  return Math.round(answer * 100000) / 100000;
+}
+
+function displayErrorMsg() {
+  previousNum = "Stop dividing by 0!";
+  console.log(previousNum);
+  currentNum = "";
+  operator = "";
+  previousDisplayedNum.textContent = "";
+  currentDisplayedNum.textContent = previousNum;
 }
