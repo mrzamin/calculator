@@ -8,6 +8,7 @@ let clearBtn = document.querySelector(".clear");
 let percentBtn = document.querySelector(".percent");
 let decimalBtn = document.querySelector(".decimal");
 let equalsBtn = document.querySelector(".equals");
+let changeSignBtn = document.querySelector(".changeSign");
 
 //Sets global variables.
 let currentNum = "";
@@ -41,7 +42,6 @@ function displayCurrentNum(digit) {
 }
 
 //Listen anytime an operator btn is pressed.
-
 operatorBtns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
     updateNumbers(e.target.textContent);
@@ -82,7 +82,16 @@ function updateNumbers(optBtn) {
   }
 }
 
-// //Listens whenever clear btn is clicked.
+//Listens when +/- btn is clicked.
+changeSignBtn.addEventListener("click", changeSign);
+
+//changes the sign of the current num.
+function changeSign() {
+  currentNum *= -1;
+  currentDisplayedNum.textContent = currentNum;
+}
+
+//Listens whenever clear btn is clicked.
 clearBtn.addEventListener("click", clearCalc);
 
 //Fires when clear btn is pressed. Clears the calculator.
