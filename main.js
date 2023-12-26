@@ -163,3 +163,28 @@ function displayErrorMsg() {
   previousDisplayedNum.textContent = "";
   currentDisplayedNum.textContent = previousNum;
 }
+
+//Add event listener to window that listens to any keypress.
+window.addEventListener("keydown", handleKeyPress);
+
+function handleKeyPress(e) {
+  e.preventDefault();
+  if (e.key >= 0 && e.key <= 9) {
+    displayCurrentNum(e.key);
+  }
+  if (
+    e.key === "Enter" ||
+    (e.key === "=" && currentNum != "" && previousNum != "")
+  ) {
+    operate();
+  }
+  if (e.key === "+" || e.key === "-" || e.key === "/" || e.key === "*") {
+    updateNumbers(e.key);
+  }
+  if (e.key === "x" || e.key === "X") {
+    updateNumbers("*");
+  }
+  if (e.key === ".") {
+    addDecimal();
+  }
+}
