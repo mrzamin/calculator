@@ -55,6 +55,8 @@ function addDecimal() {
   if (!currentNum.includes(".")) {
     currentNum += ".";
     currentDisplayedNum.textContent = currentNum;
+  } else {
+    decimalBtn.setAttribute("disabled");
   }
 }
 
